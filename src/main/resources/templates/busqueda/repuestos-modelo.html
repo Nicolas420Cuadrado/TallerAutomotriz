@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Repuestos por modelo')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Repuestos por modelo</h1>
+                    <p>Consulte los repuestos compatibles con un modelo especifico.</p>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="barra-busqueda" th:action="@{/busquedas/repuestos-modelo}" method="post">
+                    <select name="idModelo" style="min-width: 260px;">
+                        <option value="">Seleccione un modelo...</option>
+                        <option th:each="m : ${modelos}" th:value="${m.idModelo}"
+                                th:selected="${idModelo != null and idModelo == m.idModelo}"
+                                th:text="${m.descripcion}"></option>
+                    </select>
+                    <button type="submit" class="btn">Consultar</button>
+                </form>
+
+                <div th:if="${resultados != null}">
+                    <h2 th:if="${modeloSeleccionado != null}"
+                        th:text="'Repuestos para ' + ${modeloSeleccionado.descripcion}">Resultados</h2>
+
+                    <div class="tabla-contenedor" th:if="${!#lists.isEmpty(resultados)}">
+                        <table class="tabla">
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>EAN</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="r : ${resultados}">
+                                <td th:text="${r.nombre}"></td>
+                                <td th:text="${r.ean}"></td>
+                                <td th:text="${r.precio}"></td>
+                                <td th:text="${r.stock}"></td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${r.estadoRepuesto} ? 'badge-activo' : 'badge-inactivo'"
+                                          th:text="${r.estadoRepuesto} ? 'Activo' : 'Inactivo'"></span>
+                                </td>
+                                <td class="acciones-celda">
+                                    <a class="btn btn-secundario btn-sm" th:href="@{/repuestos/{id}(id=${r.idRepuesto})}">Ver</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="vacio" th:if="${#lists.isEmpty(resultados)}">
+                        No hay repuestos asociados a este modelo.
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

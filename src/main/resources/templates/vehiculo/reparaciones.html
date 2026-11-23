@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Historial de reparaciones')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Historial de reparaciones</h1>
+                    <p th:text="${vehiculo.placa + ' - ' + vehiculo.modelo.descripcion}">Vehiculo</p>
+                </div>
+                <div class="acciones">
+                    <a class="btn btn-secundario"
+                       th:href="@{/vehiculos/{id}(id=${vehiculo.idVehiculo})}">Volver al vehiculo</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="tabla-contenedor" th:if="${!#lists.isEmpty(reparaciones)}">
+                    <table class="tabla">
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Mecanico</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="r : ${reparaciones}">
+                            <td th:text="${r.fecha}"></td>
+                            <td th:text="${#strings.replace(r.tipo.name(), '_', ' ')}"></td>
+                            <td th:text="${r.mecanico.nombreCompleto}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${r.estado.name() == 'EN_PROCESO'} ? 'badge-proceso' : (${r.estado.name() == 'TERMINADO'} ? 'badge-terminado' : 'badge-cancelado')"
+                                      th:text="${#strings.replace(r.estado.name(), '_', ' ')}"></span>
+                            </td>
+                            <td class="acciones-celda">
+                                <a class="btn btn-secundario btn-sm"
+                                   th:href="@{/reparaciones/{id}(id=${r.idReparacion})}">Ver</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="vacio" th:if="${#lists.isEmpty(reparaciones)}">
+                    No hay reparaciones registradas para este vehiculo.
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

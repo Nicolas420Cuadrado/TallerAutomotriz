@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Modelos')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Modelos</h1>
+                    <p>Marcas y modelos de vehiculos registrados.</p>
+                </div>
+                <div class="acciones" sec:authorize="hasRole('ADMINISTRADOR')">
+                    <a class="btn" th:href="@{/modelos/nuevo}">Nuevo modelo</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="barra-busqueda" th:action="@{/modelos}" method="get">
+                    <input type="text" name="q" th:value="${q}" placeholder="Buscar por marca o modelo">
+                    <button type="submit" class="btn">Buscar</button>
+                    <a class="btn btn-secundario" th:href="@{/modelos}" th:if="${q != null and !q.isEmpty()}">Limpiar</a>
+                </form>
+
+                <div class="tabla-contenedor" th:if="${!#lists.isEmpty(modelos)}">
+                    <table class="tabla">
+                        <thead>
+                        <tr>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="m : ${modelos}">
+                            <td th:text="${m.marca}"></td>
+                            <td th:text="${m.nombreModelo}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${m.estadoModelo} ? 'badge-activo' : 'badge-inactivo'"
+                                      th:text="${m.estadoModelo} ? 'Activo' : 'Inactivo'"></span>
+                            </td>
+                            <td class="acciones-celda">
+                                <a class="btn btn-secundario btn-sm" th:href="@{/modelos/{id}(id=${m.idModelo})}">Ver</a>
+                                <a class="btn btn-secundario btn-sm" sec:authorize="hasRole('ADMINISTRADOR')"
+                                   th:href="@{/modelos/{id}/editar(id=${m.idModelo})}">Editar</a>
+                                <form sec:authorize="hasRole('ADMINISTRADOR')" th:action="@{/modelos/{id}/estado(id=${m.idModelo})}"
+                                      method="post"
+                                      th:onsubmit="'return confirm(\'' + (${m.estadoModelo} ? 'Desactivar' : 'Activar') + ' este modelo?\')'">
+                                    <button type="submit" class="btn btn-peligro btn-sm"
+                                            th:text="${m.estadoModelo} ? 'Desactivar' : 'Activar'"></button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="vacio" th:if="${#lists.isEmpty(modelos)}">
+                    No se encontraron modelos registrados.
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

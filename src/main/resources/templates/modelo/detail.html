@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Detalle del modelo')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${modelo.descripcion}">Modelo</h1>
+                    <p>Detalle del modelo registrado.</p>
+                </div>
+                <div class="acciones">
+                    <a class="btn btn-secundario" th:href="@{/modelos}">Volver</a>
+                    <a class="btn" sec:authorize="hasRole('ADMINISTRADOR')"
+                       th:href="@{/modelos/{id}/editar(id=${modelo.idModelo})}">Editar</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="detalle">
+                    <div class="dato">
+                        <span>Marca</span>
+                        <strong th:text="${modelo.marca}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Modelo</span>
+                        <strong th:text="${modelo.nombreModelo}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Estado</span>
+                        <strong>
+                            <span class="badge"
+                                  th:classappend="${modelo.estadoModelo} ? 'badge-activo' : 'badge-inactivo'"
+                                  th:text="${modelo.estadoModelo} ? 'Activo' : 'Inactivo'"></span>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

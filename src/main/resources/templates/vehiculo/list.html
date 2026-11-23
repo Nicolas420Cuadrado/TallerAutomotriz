@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Vehiculos')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Vehiculos</h1>
+                    <p>Vehiculos registrados con sus datos de propietario.</p>
+                </div>
+                <div class="acciones" sec:authorize="hasRole('ADMINISTRADOR')">
+                    <a class="btn" th:href="@{/vehiculos/nuevo}">Nuevo vehiculo</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="barra-busqueda" th:action="@{/vehiculos}" method="get">
+                    <input type="text" name="q" th:value="${q}" placeholder="Buscar por placa o dueno">
+                    <button type="submit" class="btn">Buscar</button>
+                    <a class="btn btn-secundario" th:href="@{/vehiculos}" th:if="${q != null and !q.isEmpty()}">Limpiar</a>
+                </form>
+
+                <div class="tabla-contenedor" th:if="${!#lists.isEmpty(vehiculos)}">
+                    <table class="tabla">
+                        <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Modelo</th>
+                            <th>Dueno</th>
+                            <th>Telefono</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="v : ${vehiculos}">
+                            <td><strong th:text="${v.placa}"></strong></td>
+                            <td th:text="${v.modelo.descripcion}"></td>
+                            <td th:text="${v.nombreDueno}"></td>
+                            <td th:text="${v.telefonoDueno}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${v.estadoVehiculo} ? 'badge-activo' : 'badge-inactivo'"
+                                      th:text="${v.estadoVehiculo} ? 'Activo' : 'Inactivo'"></span>
+                            </td>
+                            <td class="acciones-celda">
+                                <a class="btn btn-secundario btn-sm" th:href="@{/vehiculos/{id}(id=${v.idVehiculo})}">Ver</a>
+                                <a class="btn btn-secundario btn-sm" sec:authorize="hasRole('ADMINISTRADOR')"
+                                   th:href="@{/vehiculos/{id}/editar(id=${v.idVehiculo})}">Editar</a>
+                                <form sec:authorize="hasRole('ADMINISTRADOR')" th:action="@{/vehiculos/{id}/estado(id=${v.idVehiculo})}"
+                                      method="post"
+                                      th:onsubmit="'return confirm(\'' + (${v.estadoVehiculo} ? 'Desactivar' : 'Activar') + ' este vehiculo?\')'">
+                                    <button type="submit" class="btn btn-peligro btn-sm"
+                                            th:text="${v.estadoVehiculo} ? 'Desactivar' : 'Activar'"></button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="vacio" th:if="${#lists.isEmpty(vehiculos)}">
+                    No se encontraron vehiculos registrados.
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

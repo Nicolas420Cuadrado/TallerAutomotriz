@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Detalle del usuario')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${usuario.nombreCompleto}">Usuario</h1>
+                    <p th:text="${usuario.email}">correo</p>
+                </div>
+                <div class="acciones">
+                    <a class="btn btn-secundario" th:href="@{/usuarios}">Volver</a>
+                    <a class="btn" th:href="@{/usuarios/{id}/editar(id=${usuario.idUsuario})}">Editar</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="detalle">
+                    <div class="dato">
+                        <span>Nombre completo</span>
+                        <strong th:text="${usuario.nombreCompleto}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Documento</span>
+                        <strong th:text="${usuario.documento}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Correo</span>
+                        <strong th:text="${usuario.email}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Rol</span>
+                        <strong th:text="${#strings.capitalize(#strings.toLowerCase(usuario.rol.nombreRol.name()))}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Estado</span>
+                        <strong>
+                            <span class="badge"
+                                  th:classappend="${usuario.estadoUsuario} ? 'badge-activo' : 'badge-inactivo'"
+                                  th:text="${usuario.estadoUsuario} ? 'Activo' : 'Inactivo'"></span>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

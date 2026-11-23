@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>No encontrado | Taller Automotriz</title>
+    <script th:replace="~{fragments/theme :: bootstrap}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:replace="~{fragments/theme :: script}"></script>
+</head>
+<body>
+<div class="error-fondo">
+    <div class="error-caja">
+        <button th:replace="~{fragments/theme :: boton('error-tema')}"></button>
+        <div class="error-codigo">404</div>
+        <h1>Pagina no encontrada</h1>
+        <p th:text="${mensaje} ?: 'El recurso solicitado no existe o fue dado de baja.'"></p>
+        <a class="btn" th:href="@{/}">Volver al panel</a>
+    </div>
+</div>
+</body>
+</html>

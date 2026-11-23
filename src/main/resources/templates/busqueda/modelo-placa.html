@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Modelo por placa')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Modelo por placa</h1>
+                    <p>Identifique el modelo de un vehiculo a partir de su placa.</p>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="barra-busqueda" th:action="@{/busquedas/modelo-placa}" method="post">
+                    <input type="text" name="placa" th:value="${placa}" maxlength="7"
+                           placeholder="Ingrese la placa (ABC-123)" style="text-transform: uppercase;">
+                    <button type="submit" class="btn">Consultar</button>
+                </form>
+
+                <div th:if="${buscado}">
+                    <div th:if="${vehiculo != null}">
+                        <h2>Resultado</h2>
+                        <div class="detalle">
+                            <div class="dato">
+                                <span>Placa</span>
+                                <strong th:text="${vehiculo.placa}"></strong>
+                            </div>
+                            <div class="dato">
+                                <span>Marca y modelo</span>
+                                <strong th:text="${vehiculo.modelo.descripcion}"></strong>
+                            </div>
+                            <div class="dato">
+                                <span>Color de la placa</span>
+                                <strong th:text="${#strings.replace(vehiculo.colorPlaca.name(), '_', ' ')}"></strong>
+                            </div>
+                            <div class="dato">
+                                <span>Dueno</span>
+                                <strong th:text="${vehiculo.nombreDueno}"></strong>
+                            </div>
+                            <div class="dato">
+                                <span>Estado</span>
+                                <strong>
+                                    <span class="badge"
+                                          th:classappend="${vehiculo.estadoVehiculo} ? 'badge-activo' : 'badge-inactivo'"
+                                          th:text="${vehiculo.estadoVehiculo} ? 'Activo' : 'Inactivo'"></span>
+                                </strong>
+                            </div>
+                        </div>
+                        <div style="margin-top: 18px;">
+                            <a class="btn btn-secundario" th:href="@{/vehiculos/{id}(id=${vehiculo.idVehiculo})}">Ver vehiculo completo</a>
+                        </div>
+                    </div>
+                    <div class="vacio" th:if="${vehiculo == null}">
+                        Sin resultados para la placa consultada.
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

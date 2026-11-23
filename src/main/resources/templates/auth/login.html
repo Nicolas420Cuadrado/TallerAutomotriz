@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Iniciar sesion | Taller Automotriz</title>
+    <script th:replace="~{fragments/theme :: bootstrap}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:replace="~{fragments/theme :: script}"></script>
+</head>
+<body>
+<div class="login-fondo">
+    <div class="login-caja">
+        <button th:replace="~{fragments/theme :: boton('login-tema')}"></button>
+        <h1>Taller Automotriz</h1>
+        <p class="subtitulo">Ingrese sus credenciales para continuar</p>
+
+        <div class="mensaje mensaje-error" th:if="${param.error}">
+            Correo o clave incorrectos.
+        </div>
+        <div class="mensaje mensaje-exito" th:if="${param.logout}">
+            La sesion se cerro correctamente.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="campo">
+                <label for="correo">Correo electronico</label>
+                <input type="email" id="correo" name="username" autocomplete="email" required autofocus>
+            </div>
+            <div class="campo">
+                <label for="password">Clave</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="btn">Ingresar</button>
+        </form>
+
+        <p class="login-pie">Proyecto Integrador - USTA Tunja 2026</p>
+    </div>
+</div>
+</body>
+</html>

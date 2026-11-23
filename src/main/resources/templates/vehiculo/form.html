@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Vehiculo')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${editando} ? 'Editar vehiculo' : 'Nuevo vehiculo'">Nuevo vehiculo</h1>
+                    <p>La placa debe tener el formato ABC-123 y ser unica en el sistema.</p>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="formulario"
+                      th:action="${editando} ? @{/vehiculos/{id}(id=${vehiculoForm.idVehiculo})} : @{/vehiculos}"
+                      th:object="${vehiculoForm}" method="post">
+                    <input type="hidden" th:field="*{idVehiculo}">
+
+                    <div class="fila">
+                        <div class="campo" th:classappend="${#fields.hasErrors('placa')} ? 'campo-con-error'">
+                            <label for="placa">Placa</label>
+                            <input type="text" id="placa" th:field="*{placa}" maxlength="7" placeholder="ABC-123"
+                                   style="text-transform: uppercase;">
+                            <span class="field-error" th:if="${#fields.hasErrors('placa')}" th:errors="*{placa}"></span>
+                        </div>
+
+                        <div class="campo" th:classappend="${#fields.hasErrors('colorPlaca')} ? 'campo-con-error'">
+                            <label for="colorPlaca">Color de la placa</label>
+                            <select id="colorPlaca" th:field="*{colorPlaca}">
+                                <option value="">Seleccione...</option>
+                                <option th:each="c : ${colores}" th:value="${c}"
+                                        th:text="${#strings.replace(c.name(), '_', ' ')}"></option>
+                            </select>
+                            <span class="field-error" th:if="${#fields.hasErrors('colorPlaca')}" th:errors="*{colorPlaca}"></span>
+                        </div>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('idModelo')} ? 'campo-con-error'">
+                        <label for="idModelo">Modelo del vehiculo</label>
+                        <select id="idModelo" th:field="*{idModelo}">
+                            <option value="">Seleccione un modelo...</option>
+                            <option th:each="m : ${modelos}" th:value="${m.idModelo}" th:text="${m.descripcion}"></option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('idModelo')}" th:errors="*{idModelo}"></span>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('nombreDueno')} ? 'campo-con-error'">
+                        <label for="nombreDueno">Nombre del dueno</label>
+                        <input type="text" id="nombreDueno" th:field="*{nombreDueno}" maxlength="150">
+                        <span class="field-error" th:if="${#fields.hasErrors('nombreDueno')}" th:errors="*{nombreDueno}"></span>
+                    </div>
+
+                    <div class="fila">
+                        <div class="campo" th:classappend="${#fields.hasErrors('documentoDueno')} ? 'campo-con-error'">
+                            <label for="documentoDueno">Documento del dueno</label>
+                            <input type="text" id="documentoDueno" th:field="*{documentoDueno}" maxlength="20">
+                            <span class="field-error" th:if="${#fields.hasErrors('documentoDueno')}" th:errors="*{documentoDueno}"></span>
+                        </div>
+
+                        <div class="campo" th:classappend="${#fields.hasErrors('telefonoDueno')} ? 'campo-con-error'">
+                            <label for="telefonoDueno">Telefono del dueno</label>
+                            <input type="text" id="telefonoDueno" th:field="*{telefonoDueno}" maxlength="20">
+                            <span class="field-error" th:if="${#fields.hasErrors('telefonoDueno')}" th:errors="*{telefonoDueno}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-acciones">
+                        <button type="submit" class="btn" th:text="${editando} ? 'Guardar cambios' : 'Registrar vehiculo'"></button>
+                        <a class="btn btn-secundario" th:href="@{/vehiculos}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

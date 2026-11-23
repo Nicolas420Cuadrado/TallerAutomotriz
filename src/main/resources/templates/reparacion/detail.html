@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Detalle de la reparacion')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="'Reparacion #' + ${reparacion.idReparacion}">Reparacion</h1>
+                    <p th:text="${reparacion.vehiculo.placa + ' - ' + reparacion.vehiculo.modelo.descripcion}"></p>
+                </div>
+                <div class="acciones">
+                    <a class="btn btn-secundario" th:href="@{/reparaciones}">Volver</a>
+                    <a class="btn" th:if="${reparacion.estado.name() == 'EN_PROCESO'}"
+                       th:href="@{/reparaciones/{id}/editar(id=${reparacion.idReparacion})}">Editar</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="detalle">
+                    <div class="dato">
+                        <span>Fecha</span>
+                        <strong th:text="${reparacion.fecha}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Tipo</span>
+                        <strong th:text="${#strings.replace(reparacion.tipo.name(), '_', ' ')}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Estado</span>
+                        <strong>
+                            <span class="badge"
+                                  th:classappend="${reparacion.estado.name() == 'EN_PROCESO'} ? 'badge-proceso' : (${reparacion.estado.name() == 'TERMINADO'} ? 'badge-terminado' : 'badge-cancelado')"
+                                  th:text="${#strings.replace(reparacion.estado.name(), '_', ' ')}"></span>
+                        </strong>
+                    </div>
+                    <div class="dato">
+                        <span>Vehiculo</span>
+                        <strong th:text="${reparacion.vehiculo.placa}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Mecanico</span>
+                        <strong th:text="${reparacion.mecanico.nombreCompleto}"></strong>
+                    </div>
+                    <div class="dato" th:if="${reparacion.observaciones != null and !reparacion.observaciones.isEmpty()}"
+                         style="grid-column: 1 / -1;">
+                        <span>Observaciones</span>
+                        <strong th:text="${reparacion.observaciones}"></strong>
+                    </div>
+                </div>
+
+                <div th:if="${reparacion.estado.name() == 'EN_PROCESO'}" style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--gris-100);">
+                    <h2>Cambiar estado</h2>
+                    <p class="ayuda" style="color: var(--gris-500); font-size: 13px;">
+                        Una reparacion en proceso solo puede pasar a TERMINADO o CANCELADO. Esta accion no se puede revertir.
+                    </p>
+                    <div class="acciones">
+                        <form th:action="@{/reparaciones/{id}/estado(id=${reparacion.idReparacion})}" method="post"
+                              onsubmit="return confirm('Marcar esta reparacion como TERMINADA?');">
+                            <input type="hidden" name="estado" value="TERMINADO">
+                            <button type="submit" class="btn btn-exito">Marcar como terminada</button>
+                        </form>
+                        <form th:action="@{/reparaciones/{id}/estado(id=${reparacion.idReparacion})}" method="post"
+                              onsubmit="return confirm('Cancelar esta reparacion?');">
+                            <input type="hidden" name="estado" value="CANCELADO">
+                            <button type="submit" class="btn btn-peligro">Cancelar reparacion</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

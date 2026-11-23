@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Detalle del repuesto')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${repuesto.nombre}">Repuesto</h1>
+                    <p th:text="'EAN: ' + ${repuesto.ean}">EAN</p>
+                </div>
+                <div class="acciones">
+                    <a class="btn btn-secundario" th:href="@{/repuestos}">Volver</a>
+                    <a class="btn" sec:authorize="hasRole('ADMINISTRADOR')"
+                       th:href="@{/repuestos/{id}/editar(id=${repuesto.idRepuesto})}">Editar</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="detalle">
+                    <div class="dato">
+                        <span>Precio</span>
+                        <strong th:text="${repuesto.precio}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Stock</span>
+                        <strong th:text="${repuesto.stock}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Estado</span>
+                        <strong>
+                            <span class="badge"
+                                  th:classappend="${repuesto.estadoRepuesto} ? 'badge-activo' : 'badge-inactivo'"
+                                  th:text="${repuesto.estadoRepuesto} ? 'Activo' : 'Inactivo'"></span>
+                        </strong>
+                    </div>
+                    <div class="dato">
+                        <span>Codigo EAN</span>
+                        <strong th:text="${repuesto.ean}"></strong>
+                    </div>
+                    <div class="dato" th:if="${repuesto.descripcion != null and !repuesto.descripcion.isEmpty()}"
+                         style="grid-column: 1 / -1;">
+                        <span>Descripcion</span>
+                        <strong th:text="${repuesto.descripcion}"></strong>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 24px;">Modelos compatibles</h2>
+                <div class="lista-modelos" th:if="${!repuesto.modelos.isEmpty()}">
+                    <span class="chip" th:each="m : ${repuesto.modelos}" th:text="${m.descripcion}"></span>
+                </div>
+                <div class="vacio" th:if="${repuesto.modelos.isEmpty()}">
+                    Este repuesto no tiene modelos asociados.
+                </div>
+
+                <div th:if="${repuesto.imagenUrl != null and !repuesto.imagenUrl.isEmpty()}" style="margin-top: 20px;">
+                    <img th:src="${repuesto.imagenUrl}" alt="Imagen del repuesto"
+                         style="max-width: 100%; max-height: 260px; border-radius: 8px; border: 1px solid var(--gris-200);">
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

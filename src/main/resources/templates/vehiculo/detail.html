@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Detalle del vehiculo')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${vehiculo.placa}">Vehiculo</h1>
+                    <p th:text="${vehiculo.modelo.descripcion}">Modelo</p>
+                </div>
+                <div class="acciones">
+                    <a class="btn btn-secundario" th:href="@{/vehiculos}">Volver</a>
+                    <a class="btn btn-secundario"
+                       th:href="@{/vehiculos/{id}/reparaciones(id=${vehiculo.idVehiculo})}">Historial de reparaciones</a>
+                    <a class="btn" sec:authorize="hasRole('ADMINISTRADOR')"
+                       th:href="@{/vehiculos/{id}/editar(id=${vehiculo.idVehiculo})}">Editar</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="detalle">
+                    <div class="dato">
+                        <span>Placa</span>
+                        <strong th:text="${vehiculo.placa}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Color de la placa</span>
+                        <strong th:text="${#strings.replace(vehiculo.colorPlaca.name(), '_', ' ')}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Marca y modelo</span>
+                        <strong th:text="${vehiculo.modelo.descripcion}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Estado</span>
+                        <strong>
+                            <span class="badge"
+                                  th:classappend="${vehiculo.estadoVehiculo} ? 'badge-activo' : 'badge-inactivo'"
+                                  th:text="${vehiculo.estadoVehiculo} ? 'Activo' : 'Inactivo'"></span>
+                        </strong>
+                    </div>
+                    <div class="dato">
+                        <span>Dueno</span>
+                        <strong th:text="${vehiculo.nombreDueno}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Documento</span>
+                        <strong th:text="${vehiculo.documentoDueno}"></strong>
+                    </div>
+                    <div class="dato">
+                        <span>Telefono</span>
+                        <strong th:text="${vehiculo.telefonoDueno}"></strong>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

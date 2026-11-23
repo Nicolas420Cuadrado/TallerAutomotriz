@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Usuario')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${editando} ? 'Editar usuario' : 'Nuevo usuario'">Nuevo usuario</h1>
+                    <p>El documento y el correo deben ser unicos.</p>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="formulario"
+                      th:action="${editando} ? @{/usuarios/{id}(id=${usuarioForm.idUsuario})} : @{/usuarios}"
+                      th:object="${usuarioForm}" method="post">
+                    <input type="hidden" th:field="*{idUsuario}">
+
+                    <div class="fila">
+                        <div class="campo" th:classappend="${#fields.hasErrors('nombre')} ? 'campo-con-error'">
+                            <label for="nombre">Nombre completo</label>
+                            <input type="text" id="nombre" th:field="*{nombre}" maxlength="100">
+                            <span class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+                        </div>
+                        <div class="campo" th:classappend="${#fields.hasErrors('documento')} ? 'campo-con-error'">
+                            <label for="documento">Documento</label>
+                            <input type="text" id="documento" th:field="*{documento}" maxlength="20">
+                            <span class="field-error" th:if="${#fields.hasErrors('documento')}" th:errors="*{documento}"></span>
+                        </div>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('email')} ? 'campo-con-error'">
+                        <label for="email">Correo electronico</label>
+                        <input type="email" id="email" th:field="*{email}" maxlength="150">
+                        <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('idRol')} ? 'campo-con-error'">
+                        <label for="idRol">Rol</label>
+                        <select id="idRol" th:field="*{idRol}">
+                            <option value="">Seleccione...</option>
+                            <option th:each="r : ${roles}" th:value="${r.idRol}"
+                                    th:text="${#strings.capitalize(#strings.toLowerCase(r.nombreRol.name()))}"></option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('idRol')}" th:errors="*{idRol}"></span>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('clave')} ? 'campo-con-error'">
+                        <label for="clave">Clave</label>
+                        <input type="password" id="clave" th:field="*{clave}" maxlength="100"
+                               th:attr="required=${!editando} ? 'required' : null">
+                        <div class="ayuda" th:if="${editando}">Deje este campo vacio para conservar la clave actual.</div>
+                        <div class="ayuda" th:unless="${editando}">La clave es obligatoria al crear un usuario.</div>
+                        <span class="field-error" th:if="${#fields.hasErrors('clave')}" th:errors="*{clave}"></span>
+                    </div>
+
+                    <div class="form-acciones">
+                        <button type="submit" class="btn" th:text="${editando} ? 'Guardar cambios' : 'Registrar usuario'"></button>
+                        <a class="btn btn-secundario" th:href="@{/usuarios}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

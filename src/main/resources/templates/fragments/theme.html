@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:fragment="bootstrap" th:inline="none">
+        (function () {
+            var clave = 'taller-automotriz-tema';
+            var tema = null;
+
+            try {
+                tema = window.localStorage.getItem(clave);
+            } catch (error) {
+                tema = null;
+            }
+
+            if (tema !== 'light' && tema !== 'dark') {
+                tema = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                    ? 'dark'
+                    : 'light';
+            }
+
+            document.documentElement.setAttribute('data-theme', tema);
+        }());
+    </script>
+    <script th:fragment="script" th:src="@{/js/theme.js}" defer></script>
+</head>
+<body>
+<button th:fragment="boton(clase)" type="button" th:class="'theme-toggle ' + ${clase}"
+        aria-label="Activar modo oscuro" title="Activar modo oscuro" aria-pressed="false">
+    <svg class="theme-icono-luna" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true" focusable="false">
+        <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"></path>
+    </svg>
+    <svg class="theme-icono-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+         aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+    </svg>
+</button>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solicitud no valida | Taller Automotriz</title>
+    <script th:replace="~{fragments/theme :: bootstrap}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:replace="~{fragments/theme :: script}"></script>
+</head>
+<body>
+<div class="error-fondo">
+    <div class="error-caja">
+        <button th:replace="~{fragments/theme :: boton('error-tema')}"></button>
+        <div class="error-codigo">400</div>
+        <h1>Solicitud no valida</h1>
+        <p th:text="${mensaje} ?: 'La solicitud no pudo procesarse con los datos enviados.'"></p>
+        <a class="btn" th:href="@{/}">Volver al panel</a>
+    </div>
+</div>
+</body>
+</html>

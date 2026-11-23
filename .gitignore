@@ -1,0 +1,16 @@
+target/
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Configuracion local con credenciales
+src/main/resources/application-dev.properties
+.env
+
+# Logs
+*.log
+logs/

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Usuarios')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Usuarios</h1>
+                    <p>Administradores y mecanicos del taller.</p>
+                </div>
+                <div class="acciones">
+                    <a class="btn" th:href="@{/usuarios/nuevo}">Nuevo usuario</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="tabla-contenedor" th:if="${!#lists.isEmpty(usuarios)}">
+                    <table class="tabla">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Documento</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="u : ${usuarios}">
+                            <td th:text="${u.nombreCompleto}"></td>
+                            <td th:text="${u.documento}"></td>
+                            <td th:text="${u.email}"></td>
+                            <td th:text="${#strings.capitalize(#strings.toLowerCase(u.rol.nombreRol.name()))}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${u.estadoUsuario} ? 'badge-activo' : 'badge-inactivo'"
+                                      th:text="${u.estadoUsuario} ? 'Activo' : 'Inactivo'"></span>
+                            </td>
+                            <td class="acciones-celda">
+                                <a class="btn btn-secundario btn-sm" th:href="@{/usuarios/{id}(id=${u.idUsuario})}">Ver</a>
+                                <a class="btn btn-secundario btn-sm" th:href="@{/usuarios/{id}/editar(id=${u.idUsuario})}">Editar</a>
+                                <form th:action="@{/usuarios/{id}/estado(id=${u.idUsuario})}" method="post"
+                                      th:onsubmit="'return confirm(\'' + (${u.estadoUsuario} ? 'Desactivar' : 'Activar') + ' este usuario?\')'">
+                                    <button type="submit" class="btn btn-peligro btn-sm"
+                                            th:text="${u.estadoUsuario} ? 'Desactivar' : 'Activar'"></button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="vacio" th:if="${#lists.isEmpty(usuarios)}">
+                    No hay usuarios registrados.
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

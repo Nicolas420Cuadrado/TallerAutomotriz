@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo} + ' | Taller Automotriz'">Taller Automotriz</title>
+    <script th:replace="~{fragments/theme :: bootstrap}"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:replace="~{fragments/theme :: script}"></script>
+</head>
+<body>
+
+<aside class="sidebar" th:fragment="sidebar">
+    <div class="sidebar-marca">
+        <strong>Taller Automotriz</strong>
+        <span>USTA Tunja - 2026</span>
+    </div>
+    <nav>
+        <div class="sidebar-grupo">
+            <a th:href="@{/}">Panel</a>
+        </div>
+        <div class="sidebar-grupo">
+            <span>Catalogos</span>
+            <a th:href="@{/vehiculos}">Vehiculos</a>
+            <a th:href="@{/modelos}">Modelos</a>
+            <a th:href="@{/repuestos}">Repuestos</a>
+        </div>
+        <div class="sidebar-grupo">
+            <span>Operacion</span>
+            <a th:href="@{/reparaciones}">Reparaciones</a>
+        </div>
+        <div class="sidebar-grupo">
+            <span>Consultas</span>
+            <a th:href="@{/busquedas/repuestos-modelo}">Repuestos por modelo</a>
+            <a th:href="@{/busquedas/modelo-placa}">Modelo por placa</a>
+        </div>
+        <div class="sidebar-grupo" sec:authorize="hasRole('ADMINISTRADOR')">
+            <span>Administracion</span>
+            <a th:href="@{/usuarios}">Usuarios</a>
+        </div>
+    </nav>
+</aside>
+
+<header class="topbar" th:fragment="header">
+    <div class="usuario">
+        Sesion iniciada como <strong sec:authentication="name">usuario</strong>
+    </div>
+    <div class="topbar-acciones">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-secundario btn-sm">Cerrar sesion</button>
+        </form>
+        <button th:replace="~{fragments/theme :: boton('')}"></button>
+    </div>
+</header>
+
+<div th:fragment="flash">
+    <div class="mensaje mensaje-exito" th:if="${exito}" th:text="${exito}"></div>
+    <div class="mensaje mensaje-error" th:if="${error}" th:text="${error}"></div>
+</div>
+
+<footer class="pie" th:fragment="pie">
+    Taller Automotriz - Proyecto Integrador de Desarrollo Empresarial - USTA Tunja 2026
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Reparacion')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${editando} ? 'Editar reparacion' : 'Nueva reparacion'">Nueva reparacion</h1>
+                    <p>Toda reparacion inicia en estado EN PROCESO.</p>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="formulario"
+                      th:action="${editando} ? @{/reparaciones/{id}(id=${reparacionForm.idReparacion})} : @{/reparaciones}"
+                      th:object="${reparacionForm}" method="post">
+                    <input type="hidden" th:field="*{idReparacion}">
+
+                    <div class="fila">
+                        <div class="campo" th:classappend="${#fields.hasErrors('fecha')} ? 'campo-con-error'">
+                            <label for="fecha">Fecha</label>
+                            <input type="date" id="fecha" th:field="*{fecha}">
+                            <span class="field-error" th:if="${#fields.hasErrors('fecha')}" th:errors="*{fecha}"></span>
+                        </div>
+
+                        <div class="campo" th:classappend="${#fields.hasErrors('tipo')} ? 'campo-con-error'">
+                            <label for="tipo">Tipo de reparacion</label>
+                            <select id="tipo" th:field="*{tipo}">
+                                <option value="">Seleccione...</option>
+                                <option th:each="t : ${tipos}" th:value="${t}"
+                                        th:text="${#strings.replace(t.name(), '_', ' ')}"></option>
+                            </select>
+                            <span class="field-error" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></span>
+                        </div>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('idVehiculo')} ? 'campo-con-error'">
+                        <label for="idVehiculo">Vehiculo</label>
+                        <select id="idVehiculo" th:field="*{idVehiculo}">
+                            <option value="">Seleccione un vehiculo...</option>
+                            <option th:each="v : ${vehiculos}" th:value="${v.idVehiculo}"
+                                    th:text="${v.placa + ' - ' + v.modelo.descripcion}"></option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('idVehiculo')}" th:errors="*{idVehiculo}"></span>
+                    </div>
+
+                    <div class="campo" sec:authorize="hasRole('ADMINISTRADOR')"
+                         th:classappend="${#fields.hasErrors('idMecanico')} ? 'campo-con-error'">
+                        <label for="idMecanico">Mecanico asignado</label>
+                        <select id="idMecanico" th:field="*{idMecanico}">
+                            <option value="">Seleccione un mecanico...</option>
+                            <option th:each="m : ${mecanicos}" th:value="${m.idUsuario}"
+                                    th:text="${m.nombreCompleto}"></option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('idMecanico')}" th:errors="*{idMecanico}"></span>
+                    </div>
+
+                    <div class="campo" sec:authorize="hasRole('MECANICO')">
+                        <label>Mecanico asignado</label>
+                        <div class="ayuda">La reparacion se asignara automaticamente a su usuario.</div>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('observaciones')} ? 'campo-con-error'">
+                        <label for="observaciones">Observaciones</label>
+                        <textarea id="observaciones" th:field="*{observaciones}"></textarea>
+                        <span class="field-error" th:if="${#fields.hasErrors('observaciones')}" th:errors="*{observaciones}"></span>
+                    </div>
+
+                    <div class="form-acciones">
+                        <button type="submit" class="btn" th:text="${editando} ? 'Guardar cambios' : 'Registrar reparacion'"></button>
+                        <a class="btn btn-secundario" th:href="@{/reparaciones}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Reparaciones')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Reparaciones</h1>
+                    <p sec:authorize="hasRole('ADMINISTRADOR')">Todas las reparaciones registradas en el taller.</p>
+                    <p sec:authorize="hasRole('MECANICO')">Reparaciones asignadas a usted.</p>
+                </div>
+                <div class="acciones">
+                    <a class="btn" th:href="@{/reparaciones/nuevo}">Nueva reparacion</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <div class="tabla-contenedor" th:if="${!#lists.isEmpty(reparaciones)}">
+                    <table class="tabla">
+                        <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Vehiculo</th>
+                            <th>Tipo</th>
+                            <th>Mecanico</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="r : ${reparaciones}">
+                            <td th:text="${r.fecha}"></td>
+                            <td th:text="${r.vehiculo.placa}"></td>
+                            <td th:text="${#strings.replace(r.tipo.name(), '_', ' ')}"></td>
+                            <td th:text="${r.mecanico.nombreCompleto}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${r.estado.name() == 'EN_PROCESO'} ? 'badge-proceso' : (${r.estado.name() == 'TERMINADO'} ? 'badge-terminado' : 'badge-cancelado')"
+                                      th:text="${#strings.replace(r.estado.name(), '_', ' ')}"></span>
+                            </td>
+                            <td class="acciones-celda">
+                                <a class="btn btn-secundario btn-sm" th:href="@{/reparaciones/{id}(id=${r.idReparacion})}">Ver</a>
+                                <a class="btn btn-secundario btn-sm" th:if="${r.estado.name() == 'EN_PROCESO'}"
+                                   th:href="@{/reparaciones/{id}/editar(id=${r.idReparacion})}">Editar</a>
+                                <form th:if="${r.estado.name() == 'EN_PROCESO'}"
+                                      th:action="@{/reparaciones/{id}/estado(id=${r.idReparacion})}" method="post"
+                                      onsubmit="return confirm('Confirmar el cambio de estado de esta reparacion?');">
+                                    <input type="hidden" name="estado" value="TERMINADO">
+                                    <button type="submit" class="btn btn-exito btn-sm">Terminar</button>
+                                </form>
+                                <form th:if="${r.estado.name() == 'EN_PROCESO'}"
+                                      th:action="@{/reparaciones/{id}/estado(id=${r.idReparacion})}" method="post"
+                                      onsubmit="return confirm('Confirmar la cancelacion de esta reparacion?');">
+                                    <input type="hidden" name="estado" value="CANCELADO">
+                                    <button type="submit" class="btn btn-peligro btn-sm">Cancelar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="vacio" th:if="${#lists.isEmpty(reparaciones)}">
+                    No hay reparaciones registradas.
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

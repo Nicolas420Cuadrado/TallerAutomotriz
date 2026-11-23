@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{layout/base :: head('Repuestos')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1>Repuestos</h1>
+                    <p>Catalogo de repuestos y su compatibilidad con modelos.</p>
+                </div>
+                <div class="acciones" sec:authorize="hasRole('ADMINISTRADOR')">
+                    <a class="btn" th:href="@{/repuestos/nuevo}">Nuevo repuesto</a>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="barra-busqueda" th:action="@{/repuestos}" method="get">
+                    <input type="text" name="q" th:value="${q}" placeholder="Buscar por nombre o codigo EAN">
+                    <button type="submit" class="btn">Buscar</button>
+                    <a class="btn btn-secundario" th:href="@{/repuestos}" th:if="${q != null and !q.isEmpty()}">Limpiar</a>
+                </form>
+
+                <div class="tabla-contenedor" th:if="${!#lists.isEmpty(repuestos)}">
+                    <table class="tabla">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>EAN</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Modelos</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="r : ${repuestos}">
+                            <td><strong th:text="${r.nombre}"></strong></td>
+                            <td th:text="${r.ean}"></td>
+                            <td th:text="${r.precio}"></td>
+                            <td th:text="${r.stock}"></td>
+                            <td th:text="${r.modelos.size()}"></td>
+                            <td>
+                                <span class="badge"
+                                      th:classappend="${r.estadoRepuesto} ? 'badge-activo' : 'badge-inactivo'"
+                                      th:text="${r.estadoRepuesto} ? 'Activo' : 'Inactivo'"></span>
+                            </td>
+                            <td class="acciones-celda">
+                                <a class="btn btn-secundario btn-sm" th:href="@{/repuestos/{id}(id=${r.idRepuesto})}">Ver</a>
+                                <a class="btn btn-secundario btn-sm" sec:authorize="hasRole('ADMINISTRADOR')"
+                                   th:href="@{/repuestos/{id}/editar(id=${r.idRepuesto})}">Editar</a>
+                                <form sec:authorize="hasRole('ADMINISTRADOR')" th:action="@{/repuestos/{id}/estado(id=${r.idRepuesto})}"
+                                      method="post"
+                                      th:onsubmit="'return confirm(\'' + (${r.estadoRepuesto} ? 'Desactivar' : 'Activar') + ' este repuesto?\')'">
+                                    <button type="submit" class="btn btn-peligro btn-sm"
+                                            th:text="${r.estadoRepuesto} ? 'Desactivar' : 'Activar'"></button>
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="vacio" th:if="${#lists.isEmpty(repuestos)}">
+                    No se encontraron repuestos registrados.
+                </div>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Repuesto')}"></head>
+<body>
+<div class="app">
+    <aside th:replace="~{layout/base :: sidebar}"></aside>
+    <div class="main">
+        <header th:replace="~{layout/base :: header}"></header>
+        <main class="content">
+            <div th:replace="~{layout/base :: flash}"></div>
+
+            <div class="encabezado">
+                <div>
+                    <h1 th:text="${editando} ? 'Editar repuesto' : 'Nuevo repuesto'">Nuevo repuesto</h1>
+                    <p>El codigo EAN debe tener 13 digitos y ser unico. Seleccione los modelos compatibles.</p>
+                </div>
+            </div>
+
+            <div class="tarjeta">
+                <form class="formulario"
+                      th:action="${editando} ? @{/repuestos/{id}(id=${repuestoForm.idRepuesto})} : @{/repuestos}"
+                      th:object="${repuestoForm}" method="post">
+                    <input type="hidden" th:field="*{idRepuesto}">
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('nombre')} ? 'campo-con-error'">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" th:field="*{nombre}" maxlength="150">
+                        <span class="field-error" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></span>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('descripcion')} ? 'campo-con-error'">
+                        <label for="descripcion">Descripcion</label>
+                        <textarea id="descripcion" th:field="*{descripcion}"></textarea>
+                        <span class="field-error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
+                    </div>
+
+                    <div class="fila">
+                        <div class="campo" th:classappend="${#fields.hasErrors('precio')} ? 'campo-con-error'">
+                            <label for="precio">Precio</label>
+                            <input type="number" id="precio" th:field="*{precio}" step="0.01" min="0.01">
+                            <span class="field-error" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></span>
+                        </div>
+
+                        <div class="campo" th:classappend="${#fields.hasErrors('stock')} ? 'campo-con-error'">
+                            <label for="stock">Stock</label>
+                            <input type="number" id="stock" th:field="*{stock}" min="0">
+                            <span class="field-error" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></span>
+                        </div>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('ean')} ? 'campo-con-error'">
+                        <label for="ean">Codigo EAN</label>
+                        <input type="text" id="ean" th:field="*{ean}" maxlength="13" placeholder="13 digitos">
+                        <span class="field-error" th:if="${#fields.hasErrors('ean')}" th:errors="*{ean}"></span>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('imagenUrl')} ? 'campo-con-error'">
+                        <label for="imagenUrl">URL de imagen (opcional)</label>
+                        <input type="url" id="imagenUrl" th:field="*{imagenUrl}" maxlength="500" placeholder="https://...">
+                        <span class="field-error" th:if="${#fields.hasErrors('imagenUrl')}" th:errors="*{imagenUrl}"></span>
+                    </div>
+
+                    <div class="campo" th:classappend="${#fields.hasErrors('idsModelos')} ? 'campo-con-error'">
+                        <label for="idsModelos">Modelos compatibles</label>
+                        <select id="idsModelos" th:field="*{idsModelos}" multiple size="8">
+                            <option th:each="m : ${modelos}" th:value="${m.idModelo}" th:text="${m.descripcion}"></option>
+                        </select>
+                        <div class="ayuda">Mantenga presionada la tecla Ctrl para seleccionar varios modelos.</div>
+                        <span class="field-error" th:if="${#fields.hasErrors('idsModelos')}" th:errors="*{idsModelos}"></span>
+                    </div>
+
+                    <div class="form-acciones">
+                        <button type="submit" class="btn" th:text="${editando} ? 'Guardar cambios' : 'Registrar repuesto'"></button>
+                        <a class="btn btn-secundario" th:href="@{/repuestos}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </main>
+        <footer th:replace="~{layout/base :: pie}"></footer>
+    </div>
+</div>
+</body>
+</html>
